@@ -1,0 +1,6 @@
+snowflake-connector-python>=3.10.0
+dbt-snowflake>=1.8.0
+requests==2.31.0
+python-dotenv==1.0.1
+pytest==8.1.1
+# apache-airflow runs in Docker (see docker-compose.yml) — not installed locally

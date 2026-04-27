@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: fct_weather_daily
+    description: >
+      Analytics-ready fact table with one row per city per day.
+      Incrementally loaded. Includes derived fields (season, temp range, rain flag)
+      and a surrogate key for downstream joins.
+    columns:
+      - name: weather_id
+        description: Surrogate key (city + observation_date)
+        tests:
+          - unique
+          - not_null
+      - name: city
+        description: City name
+        tests:
+          - not_null
+      - name: observation_date
+        description: Date of observation
+        tests:
+          - not_null
+      - name: temp_max_c
+        description: Maximum temperature in Celsius
+        tests:
+          - not_null
+      - name: temp_min_c
+        description: Minimum temperature in Celsius
+        tests:
+          - not_null
+      - name: season
+        description: Meteorological season derived from observation month
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Winter', 'Spring', 'Summer', 'Fall']
+      - name: is_rainy_day
+        description: True if precipitation_mm > 0
+        tests:
+          - not_null

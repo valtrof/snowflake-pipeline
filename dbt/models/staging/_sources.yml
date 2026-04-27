@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: raw
+    database: WEATHER_DB
+    schema: RAW
+    tables:
+      - name: raw_weather_daily
+        description: Raw daily weather data loaded from Open-Meteo API. All columns are strings.
+        columns:
+          - name: city
+            description: City name
+          - name: date
+            description: Observation date (YYYY-MM-DD string)
+          - name: temp_max_c
+            description: Maximum temperature in Celsius (string)
+          - name: temp_min_c
+            description: Minimum temperature in Celsius (string)
+          - name: precipitation_mm
+            description: Total precipitation in mm (string)
+          - name: windspeed_max_kmh
+            description: Maximum wind speed in km/h (string)
+          - name: loaded_at
+            description: Timestamp when row was loaded into Snowflake

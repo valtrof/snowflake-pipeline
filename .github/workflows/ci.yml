@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  python-tests:
+    name: Python unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest tests/ -v
+
+  dbt-compile:
+    name: dbt compile + test (CI target — no Snowflake connection)
+    runs-on: ubuntu-latest
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_WAREHOUSE: PIPELINE_WH
+      SNOWFLAKE_DATABASE: WEATHER_DB
+      SNOWFLAKE_ROLE: ACCOUNTADMIN
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt-snowflake
+        run: pip install dbt-snowflake
+
+      - name: dbt deps
+        working-directory: dbt
+        run: dbt deps --profiles-dir .
+
+      - name: dbt compile
+        working-directory: dbt
+        run: dbt compile --profiles-dir . --target dev
+
+      - name: dbt test (schema + singular tests)
+        working-directory: dbt
+        run: dbt test --profiles-dir . --target dev
+        # Requires SNOWFLAKE_* secrets set in repo settings for live test run
+        # Remove this step or add `continue-on-error: true` if secrets not configured
