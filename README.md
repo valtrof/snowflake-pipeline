@@ -1,5 +1,7 @@
 # snowflake-pipeline
 
+![CI](https://github.com/valtrof/snowflake-pipeline/actions/workflows/ci.yml/badge.svg?branch=main)
+
 End-to-end ELT pipeline ingesting daily weather data from the [Open-Meteo API](https://open-meteo.com/) into **Snowflake**, transformed with **dbt**, orchestrated by **Apache Airflow**, and validated with a full data quality test suite.
 
 ## Architecture
